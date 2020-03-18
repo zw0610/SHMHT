@@ -1,2 +1,2 @@
 # SHMHT
-hast able in shared memory
+hash table in shared memory
