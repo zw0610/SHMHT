@@ -4,6 +4,7 @@
 #include <string.h>
 #include <assert.h>
 
+
 RNM::RNM()
 {   
     constexpr std::size_t len_rna = 101;
@@ -123,6 +124,10 @@ void RNM::delete_rnode(const pid_st &key)
     }
 }
 
+bool RNM::contain(const pid_st &key) const {
+    return find_rnode(key) != nullptr;
+}
+
 void RNM::print_rnodes(void) const
 {
     std::cout << "Listing items from Resource Node Map:" << std::endl;
@@ -146,4 +151,62 @@ std::ostream &operator<<(std::ostream &os, const RNode &rn)
 {
     os << "PID: " << rn.pid << " time: " << rn.t << " res_entry_idx: " << rn.res_entry_idx;
     return os;
+}
+
+const int RNM::push_resource(const Resource& r) {
+    for (size_t i = 0; i < rap.size(); i++)
+    {
+        std::cout << "checking resource record: " << i << std::endl;
+        Resource& rn = rap[i];
+        std::cout << rn.bytes << std::endl;
+        std::cout << "check if empty" << std::endl;
+        if (rn.empty())
+        {
+            std::cout << "found empty slot at " << i << std::endl; 
+            rn.set_res(r.ptr, r.bytes);
+            return int(i);
+        }
+        
+    }
+    // if the shared memory is full:
+    return -1;
+}
+
+
+void RNM::add_resource(const int32_t pid, const uint64_t stime, CUdeviceptr dptr, const std::size_t bytes) {
+    // prepare data
+    const pid_st key = std::make_tuple(pid, stime);
+    const Resource r = Resource(dptr, bytes);
+
+    // push the record to shared memory
+    std::cout << "pushing resource" << std::endl;
+    const int r_idx = this->push_resource(r);
+
+    // check if the rnode exist
+    std::cout << "finding rnode" << std::endl;
+    RNode* target_rn = find_rnode(key);
+    if (target_rn != nullptr)
+    {
+        std::cout << "found rnode, adding resource" << std::endl;
+        target_rn->add_resource(r_idx, rap);
+    }
+    else
+    {
+        // if the node does not exist
+        // create node first
+        std::cout << "rnode not found, adding rnode first" << std::endl;
+        RNode val_rn = RNode(pid, stime, 1);
+        RNode* rn = this->insert_rnode(key, val_rn);
+        // then insert resource
+        std::cout << "adding resource after node inserted" << std::endl; 
+        rn->add_resource(r_idx, rap);
+    }
+}
+
+void RNM::remove_resource(const int32_t pid, const uint64_t stime, CUdeviceptr dptr) {
+    const pid_st key = std::make_tuple(pid, stime);
+    RNode* target_rn = find_rnode(key);
+
+    bool res = target_rn->remove_resource_by_dptr(dptr, rap);
+    assert(res);
 }
