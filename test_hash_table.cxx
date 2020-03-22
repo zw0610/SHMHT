@@ -25,7 +25,7 @@ int main(int argc, const char * argv[]) {
     }
     auto y = rnm.find_rnode(std::make_tuple<int32_t, uint64_t>(36452, 2646593046));
     if (y != nullptr) {
-        std::cout << "found val: " << *x << " associated with key: (36452, 2646593046)" << std::endl;
+        std::cout << "found val: " << *y << " associated with key: (36452, 2646593046)" << std::endl;
     } else {
         std::cout << "no element associated with (36452, 2646593046)" << std::endl;
     }
