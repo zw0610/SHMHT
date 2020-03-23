@@ -7,8 +7,8 @@
 #include <tuple>
 #include <assert.h>
 
-#include "gmem.h"
-#include "rnode.h"
+#include "gmem.hpp"
+#include "rnode.hpp"
 
 class RNM
 {

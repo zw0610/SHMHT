@@ -1,4 +1,4 @@
-#include "resource.h"
+#include "resource.hpp"
 
 #include <errno.h>
 #include <string.h>
@@ -40,9 +40,9 @@ RNM::RNM(const RNM &rnm)
     len_gmem = rnm.len_gmem;
 }
 
-RNM::RNM(const int len_rnode, const int len_gmem) {
-    this->len_rnode = len_rnode;
-    this->len_gmem = len_gmem;
+RNM::RNM(const int clen_rnode, const int clen_gmem) {
+    this->len_rnode = clen_rnode;
+    this->len_gmem = clen_gmem;
     init();
 }
 

@@ -53,3 +53,6 @@ dkms.conf
 
 # VSCode settings
 .vscode/
+
+#cmake related
+/build

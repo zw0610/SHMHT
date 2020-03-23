@@ -43,11 +43,11 @@ struct RNode
         this->stat = rn.stat;
     }
     
-    RNode(const int pid, const unsigned long t, const int res_entry_idx)
+    RNode(const int npid, const unsigned long nt, const int nres_entry_idx)
     {
-        this->pid = pid;
-        this->t = t;
-        this->res_entry_idx = res_entry_idx;
+        this->pid = npid;
+        this->t = nt;
+        this->res_entry_idx = nres_entry_idx;
         this->stat = RNodeStatus::EXIST;
     }
     
